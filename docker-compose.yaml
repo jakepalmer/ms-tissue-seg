@@ -1,0 +1,12 @@
+# BUILD = `docker-compose build`
+# RUN = `docker-compose run ms_tissue_seg
+
+version: "3.0"
+services:
+  ms_tissue_seg:
+    image: ghcr.io/jakepalmer/ms-tissue-seg:dev_0.1
+    build: .
+    volumes:
+      - ${PWD}:/home
+      # - /var/run/docker.sock:/var/run/docker.sock
+      # command: bash -c "docker pull nipreps/mriqc:latest && python3 /home/run_pipeline.py"
