@@ -5,11 +5,12 @@
             "modalityLabel": "T1w",
             "criteria": {
                 "SeriesDescription": "SAG FSPGR BRAVO",
-                "EchoTime": 0.002928,
-                "RepetitionTime": 0.006656,
-                "InversionTime": 0.65,
-                "AcquisitionMatrixPE": 256,
-                "ReconMatrixPE": 256
+                "ImageType": [
+                    "ORIGINAL",
+                    "PRIMARY",
+                    "OTHER"
+                ],
+                "SidecarFilename": "<session>"
             },
             "sidecarChanges": {
                 "ProtocolName": "T1w"
@@ -20,8 +21,12 @@
             "modalityLabel": "FLAIR",
             "criteria": {
                 "SeriesDescription": "Sag CUBE FLAIR POST*",
-                "EchoTime": 0.13075,
-                "AcquisitionMatrixPE": 224
+                "ImageType": [
+                    "ORIGINAL",
+                    "PRIMARY",
+                    "OTHER"
+                ],
+                "SidecarFilename": "<session>"
             },
             "sidecarChanges": {
                 "ProtocolName": "FLAIR"

@@ -29,7 +29,7 @@ Tissue and lesion segmentation for modelling MS lesion progression.
 ## Usage
 
 * Clone repo
-* Add `.iso` files into `/data/raw` directory
+* Add `.iso` files into `/data/sourcedata` directory
 * Run docker command `docker run --rm -it -v $PWD:/home ghcr.io/jakepalmer/ms-tissue-seg:dev`
 
 ## Processing details and references
@@ -40,15 +40,15 @@ Docker container for end-to-end processing generated with [Neurodocker](https://
 
 ### Dicom to BIDS
 
-BIDS is a standard for structuring neuroimaging datasets that is being increasingly implemented that allows a consistent interface and documentation of datasets. A number of open source pipelines expect input to be in BIDS format.
+BIDS is a standard for structuring neuroimaging datasets that allows a consistent interface and documentation of datasets. `dcm2bids` is a tool that facilitates the 
 
-HeuDiConv has been developed to automate the conversion from dicom to BIDS. It requires some setup (i.e. putting together a heuristic.py file to provide the rules for conversion), however this will generally only need to be setup once and has been done (see heudiconv_src/heuristic.py). This would need updating if the MRI sequences change. Example commands to help with the setup are included in the comments in the docstring for the runDcm2BIDS function in the run_pipeline.py file.
+<!-- HeuDiConv has been developed to automate the conversion from dicom to BIDS. It requires some setup (i.e. putting together a heuristic.py file to provide the rules for conversion), however this will generally only need to be setup once and has been done (see heudiconv_src/heuristic.py). This would need updating if the MRI sequences change. Example commands to help with the setup are included in the comments in the docstring for the runDcm2BIDS function in the run_pipeline.py file.
 
-For more info see [BIDS](https://bids.neuroimaging.io/) and [HeuDiConv](https://heudiconv.readthedocs.io/en/latest/index.html) documentation, also [this HeuDiConv walkthrough](https://reproducibility.stanford.edu/bids-tutorial-series-part-2a/) and [wiki](https://github.com/bids-standard/bids-starter-kit).
+For more info see [BIDS](https://bids.neuroimaging.io/) and [HeuDiConv](https://heudiconv.readthedocs.io/en/latest/index.html) documentation, also [this HeuDiConv walkthrough](https://reproducibility.stanford.edu/bids-tutorial-series-part-2a/) and [wiki](https://github.com/bids-standard/bids-starter-kit). -->
 
 #### Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5557588.svg)](https://doi.org/10.5281/zenodo.5557588)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4568180.svg)](https://doi.org/10.5281/zenodo.4568180)
 
 --------
 Project based on the [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/). #cookiecutterdatascience

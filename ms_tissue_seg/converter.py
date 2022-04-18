@@ -1,44 +1,27 @@
 import shutil
-from ms_tissue_seg.utils import runBash_parallel, Constants
+from ms_tissue_seg.utils import runBash, runBash_parallel, Constants
 from pathlib import Path
 import os
 from glob import glob
+import json
 
 constants = Constants()
 
 
-def _tidy_files():
+def _update_conversion_config(subj: str, ses: str) -> Path:
 
-    # Remove unused modalities
-    shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))
+    master_config_file = constants.src_dir / "dcm2bids_config.json"
+    subj_config_file = Path(f"/tmp/_tmp_{subj}_{ses}_config.json")
 
-    # Remove non-compressed files
-    files = glob(str(constants.bids_data_dir / "sub-*" / "ses-*" / "anat" / "*"))
-    for f in files:
-        if Path(f).suffix == ".nii":
-            os.remove(f)
-        # elif Path(f).suffix == ".json":
-        #     new_fname = (
-        #         str(Path(f).parent)
-        #         + "/"
-        #         + "_".join([i for i in Path(f).stem.split("_") if "heudiconv" not in i])
-        #         + ".json"
-        #     )
-        #     os.rename(f, new_fname)
-        # elif Path(f).suffixes == [".nii", ".gz"]:
-        #     new_fname = (
-        #         str(Path(f).parent)
-        #         + "/"
-        #         + "_".join(
-        #             [
-        #                 i
-        #                 for i in Path(f).stem.split(".")[0].split("_")
-        #                 if "heudiconv" not in i
-        #             ]
-        #         )
-        #         + ".nii.gz"
-        #     )
-        #     os.rename(f, new_fname)
+    with open(master_config_file, "r") as file_in:
+        data = json.load(file_in)
+        for entry in data["descriptions"]:
+            entry["criteria"]["SidecarFilename"] = f"*{ses}*"
+
+    with open(subj_config_file, "w") as file_out:
+        file_out.write(json.dumps(data))
+
+    return subj_config_file
 
 
 def extract_dcm(iso_objects: list, extract_iso: bool = True) -> list:
@@ -83,6 +66,36 @@ def extract_dcm(iso_objects: list, extract_iso: bool = True) -> list:
     return subjects, sessions
 
 
+def dcm2bids(subjects: list, sessions: list):
+    """
+    Commands run during setup:
+    - `dcm2bids_scaffold /home/data` to setup data directory
+    - `dcm2bids_helper -d /home/data/sourcedata/ -o /home/data/bids_input`
+    """
+    args = []
+
+    for subj, ses in zip(subjects, sessions):
+
+        subj_config_file: Path = _update_conversion_config(subj, ses)
+
+        # Run conversion
+        cmd = f"""dcm2bids \
+                    -d {str(constants.raw_data_dir)} \
+                    -p {subj} \
+                    -s {ses} \
+                    -o {str(constants.bids_data_dir)} \
+                    -c {str(subj_config_file)}"""
+        args.append(cmd)
+        # runBash(cmd)
+
+    runBash_parallel(func=os.system, args=args)
+
+    shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))
+
+
+#! ==========
+
+
 # def dcm2bids(subjects: list, sessions: list):
 #     """
 #     Run conversion dicom to BIDS conversion. The below commands were
@@ -122,22 +135,35 @@ def extract_dcm(iso_objects: list, extract_iso: bool = True) -> list:
 #     _tidy_file_names()
 
 
-def dcm2bids(subjects: list, sessions: list):
-    """
-    Commands run during setup:
-    - `dcm2bids_scaffold /home/data` to setup data directory
-    - `dcm2bids_helper -d /home/data/sourcedata/ -o /home/data/bids_input`
-    """
-    args = []
+# def _tidy_files():
 
-    for subj, ses in zip(subjects, sessions):
-        cmd = f"""dcm2bids \
-                    -d {str(constants.raw_data_dir)} \
-                    -p {subj} \
-                    -s {ses} \
-                    -o {str(constants.bids_data_dir)} \
-                    -c {str(constants.src_dir / 'dcm2bids_config.json')}"""
-        args.append(cmd)
+#     # Remove unused modalities
+#     shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))
 
-    runBash_parallel(func=os.system, args=args)
-    _tidy_files()
+#     # Remove non-compressed files
+#     files = glob(str(constants.bids_data_dir / "sub-*" / "ses-*" / "anat" / "*"))
+#     for f in files:
+#         if Path(f).suffix == ".nii":
+#             os.remove(f)
+#         # elif Path(f).suffix == ".json":
+#         #     new_fname = (
+#         #         str(Path(f).parent)
+#         #         + "/"
+#         #         + "_".join([i for i in Path(f).stem.split("_") if "heudiconv" not in i])
+#         #         + ".json"
+#         #     )
+#         #     os.rename(f, new_fname)
+#         # elif Path(f).suffixes == [".nii", ".gz"]:
+#         #     new_fname = (
+#         #         str(Path(f).parent)
+#         #         + "/"
+#         #         + "_".join(
+#         #             [
+#         #                 i
+#         #                 for i in Path(f).stem.split(".")[0].split("_")
+#         #                 if "heudiconv" not in i
+#         #             ]
+#         #         )
+#         #         + ".nii.gz"
+#         #     )
+#         #     os.rename(f, new_fname)

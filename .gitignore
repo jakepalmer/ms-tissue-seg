@@ -2,13 +2,17 @@
 archive_*
 
 # Keep data directories but ignore files
-./data/bids_input/*
-./data/sourcedata/*
-./data/derivatives/*
+data/derivatives/*
+data/sourcedata/*
+data/bids_input/*
 
-!./data/bids_input/.gitkeep
-!./data/sourcedata/.gitkeep
-!./data/derivatives/.gitkeep
+!data/bids_input/.gitkeep
+!data/bids_input/CHANGES
+!data/bids_input/README
+!data/bids_input/*.*
+!data/sourcedata/.gitkeep
+!data/derivatives/.gitkeep
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

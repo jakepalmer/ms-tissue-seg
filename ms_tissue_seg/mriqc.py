@@ -1,22 +1,29 @@
 """
 Run participant and group level QC with MRIQC.
 """
-from ms_tissue_seg.utils import constants, runBash
+import os
+from ms_tissue_seg.utils import constants, runBash, runBash_parallel
 
 
 def runQC():
-    cmd_base = f"""docker run -it --rm \
-        -v {str(constants.bids_data_dir)}:/data:ro \
-        -v {str(constants.processed_data_dir)}:/out \
+
+    mriqc_dir = constants.local_base_dir / "data" / "derivatives" / "mriqc"
+    mriqc_dir.mkdir(exist_ok=True, parents=True)
+
+    args = []
+
+    cmd_base = f"""docker run --rm \
+        -v {str(constants.local_base_dir)}/data/bids_input:/data:ro \
+        -v {str(mriqc_dir)}:/out \
+        -v /var/run/docker.sock:/var/run/docker.sock \
         nipreps/mriqc:latest \
             /data /out """
-    # cmd_base = f"""mriqc \
-    #                 {str(constants.bids_data_dir)} \
-    #                 {str(constants.processed_data_dir)} \
-    #                 --no-sub \
-    #                 -w /tmp """
+
     cmd = cmd_base + "participant"
-    runBash(cmd)
+
+    args.append(cmd)
+    runBash_parallel(func=os.system, args=args)
+    # runBash(cmd)
 
     cmd = cmd_base + "group"
     runBash(cmd)
