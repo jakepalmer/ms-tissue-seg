@@ -7,30 +7,34 @@ Tissue and lesion segmentation for modelling MS lesion progression.
 ## Project Organization
 
     ├── LICENSE
-    ├── README.md                               <- The top-level README for developers using this project.
+    ├── README.md                               <- The top-level README for using this project
+    ├── docker-compose.yaml
+    ├── Dockerfile
+    ├── setup.py                                <- Makes project pip installable (pip install -e .)
     ├── data
-    │   ├── interim                             <- Intermediate data that has been transformed.
-    │   ├── processed                           <- The final, canonical data sets for modeling.
-    │   └── raw                                 <- The original, immutable data dump.
-    ├── requirements.txt                        <- The requirements file for reproducing analysis environment
-    ├── setup.py                                <- makes project pip installable (pip install -e .) so src can be imported
-    ├── ms_tissue_seg                           <- Source code for use in this project.
+    │   ├── bids_input                          <- BIDS compliant input files converted from sourcedata
+    │   ├── derivatives                         <- Outputs of processing derived from bids_input
+    │   ├── sourcedata                          <- The original, immutable data (here, *.iso files)
+    ├── ms_tissue_seg                           <- Source code
     │   ├── __init__.py                         <- Makes ms_tissue_seg a Python module
-    │   ├── utils                               <- General utilities
-    │   │   └── constants.py
+    │   ├── converter.py                        <- Tools for converting from sourcedata to BIDS format
+    │   ├── mriqc.py                            <- Basic wrapper to run MRIQC (see below for reference)
+    │   ├── preprocess.py                       <- Tools for preparing input files (e.g. brain extract, denoise etc.)
+    │   ├── segmentation.py                     <- N-tissue and lesion segmentation
+    │   ├── utils.py                            <- General helper variables/functions (e.g. constant variables)
     │   ├── src                                 <- Supporting files
-    │   │   └── generate_container_recipe.py    <- Neurodocker command to generate Docker container for analysis
-    │   │   └── heuristic.py                    <- File required by Heudiconv for dicom to BIDS conversion
+    │   │   ├── generate_container_recipe.py    <- Neurodocker command to generate Dockerfile for analysis
+    │   │   ├── dcm2bids_config.json            <- Configuration for converting from sourcedata to BIDS
 
 ## Prerequisites
 
-* Docker (add install instructions)
+* Docker and docker-compose (add install instructions)
 
 ## Usage
 
 * Clone repo
 * Add `.iso` files into `/data/sourcedata` directory
-* Run docker command `docker run --rm -it -v $PWD:/home ghcr.io/jakepalmer/ms-tissue-seg:dev`
+* Run docker command `docker-compose run --rm ms_tissue_seg`
 
 ## Processing details and references
 
@@ -40,15 +44,22 @@ Docker container for end-to-end processing generated with [Neurodocker](https://
 
 ### Dicom to BIDS
 
-BIDS is a standard for structuring neuroimaging datasets that allows a consistent interface and documentation of datasets. `dcm2bids` is a tool that facilitates the 
+BIDS is a standard for structuring neuroimaging datasets that allows a consistent interface and documentation of datasets. `dcm2bids` is a tool that facilitates the conversion according the the configurations set in `/ms_tissue_seg/src/dcm2bids_config.json`.
 
-<!-- HeuDiConv has been developed to automate the conversion from dicom to BIDS. It requires some setup (i.e. putting together a heuristic.py file to provide the rules for conversion), however this will generally only need to be setup once and has been done (see heudiconv_src/heuristic.py). This would need updating if the MRI sequences change. Example commands to help with the setup are included in the comments in the docstring for the runDcm2BIDS function in the run_pipeline.py file.
+Documentation: <https://unfmontreal.github.io/Dcm2Bids/>
+Citation: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4568180.svg)](https://doi.org/10.5281/zenodo.4568180)
 
-For more info see [BIDS](https://bids.neuroimaging.io/) and [HeuDiConv](https://heudiconv.readthedocs.io/en/latest/index.html) documentation, also [this HeuDiConv walkthrough](https://reproducibility.stanford.edu/bids-tutorial-series-part-2a/) and [wiki](https://github.com/bids-standard/bids-starter-kit). -->
+### Preprocessing
 
-#### Citation
+Preprocessing steps as described in...using ANTsPy. Steps include...
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4568180.svg)](https://doi.org/10.5281/zenodo.4568180)
+### Tissue segmentation
+
+3-tissue segmentation...
+
+### Lesion segmentation
+
+Lesion segmentation...
 
 --------
-Project based on the [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/). #cookiecutterdatascience
+Project based on the [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/) #cookiecutterdatascience

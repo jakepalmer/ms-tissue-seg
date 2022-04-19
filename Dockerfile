@@ -7,7 +7,7 @@
 # 
 #     https://github.com/ReproNim/neurodocker
 # 
-# Timestamp: 2022/04/04 11:11:07 UTC
+# Timestamp: 2022/04/18 06:16:14 UTC
 
 FROM python:3.9-slim-buster
 
@@ -67,91 +67,6 @@ RUN apt-get update -qq \
     && make install \
     && rm -rf /tmp/dcm2niix
 
-ENV FSLDIR="/opt/fsl-6.0.1" \
-    PATH="/opt/fsl-6.0.1/bin:$PATH" \
-    FSLOUTPUTTYPE="NIFTI_GZ" \
-    FSLMULTIFILEQUIT="TRUE" \
-    FSLTCLSH="/opt/fsl-6.0.1/bin/fsltclsh" \
-    FSLWISH="/opt/fsl-6.0.1/bin/fslwish" \
-    FSLLOCKDIR="" \
-    FSLMACHINELIST="" \
-    FSLREMOTECALL="" \
-    FSLGECUDAQ="cuda.q"
-RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends \
-           bc \
-           dc \
-           file \
-           libfontconfig1 \
-           libfreetype6 \
-           libgl1-mesa-dev \
-           libgl1-mesa-dri \
-           libglu1-mesa-dev \
-           libgomp1 \
-           libice6 \
-           libxcursor1 \
-           libxft2 \
-           libxinerama1 \
-           libxrandr2 \
-           libxrender1 \
-           libxt6 \
-           sudo \
-           wget \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo "Downloading FSL ..." \
-    && mkdir -p /opt/fsl-6.0.1 \
-    && curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-6.0.1-centos6_64.tar.gz \
-    | tar -xz -C /opt/fsl-6.0.1 --strip-components 1 \
-    && sed -i '$iecho Some packages in this Docker container are non-free' $ND_ENTRYPOINT \
-    && sed -i '$iecho If you are considering commercial use of this container, please consult the relevant license:' $ND_ENTRYPOINT \
-    && sed -i '$iecho https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Licence' $ND_ENTRYPOINT \
-    && sed -i '$isource $FSLDIR/etc/fslconf/fsl.sh' $ND_ENTRYPOINT \
-    && echo "Installing FSL conda environment ..." \
-    && bash /opt/fsl-6.0.1/etc/fslconf/fslpython_install.sh -f /opt/fsl-6.0.1 \
-    && echo "Downgrading deprecation module per https://github.com/kaczmarj/neurodocker/issues/271#issuecomment-514523420" \
-    && /opt/fsl-6.0.1/fslpython/bin/conda install -n fslpython -c conda-forge -y deprecation==1.* \
-    && echo "Removing bundled with FSLeyes libz likely incompatible with the one from OS" \
-    && rm -f /opt/fsl-6.0.1/bin/FSLeyes/libz.so.1
-
-ENV PATH="/opt/afni-latest:$PATH" \
-    AFNI_PLUGINPATH="/opt/afni-latest"
-RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends \
-           ed \
-           gsl-bin \
-           libglib2.0-0 \
-           libglu1-mesa-dev \
-           libglw1-mesa \
-           libgomp1 \
-           libjpeg62 \
-           libxm4 \
-           multiarch-support \
-           netpbm \
-           tcsh \
-           xfonts-base \
-           xvfb \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libx/libxp/libxp6_1.0.2-2_amd64.deb \
-    && dpkg -i /tmp/toinstall.deb \
-    && rm /tmp/toinstall.deb \
-    && curl -sSL --retry 5 -o /tmp/toinstall.deb http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb \
-    && dpkg -i /tmp/toinstall.deb \
-    && rm /tmp/toinstall.deb \
-    && apt-get install -f \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && gsl2_path="$(find / -name 'libgsl.so.19' || printf '')" \
-    && if [ -n "$gsl2_path" ]; then \
-         ln -sfv "$gsl2_path" "$(dirname $gsl2_path)/libgsl.so.0"; \
-    fi \
-    && ldconfig \
-    && echo "Downloading AFNI ..." \
-    && mkdir -p /opt/afni-latest \
-    && curl -fsSL --retry 5 https://afni.nimh.nih.gov/pub/dist/tgz/linux_openmp_64.tgz \
-    | tar -xz -C /opt/afni-latest --strip-components 1
-
 ENV ANTSPATH="/opt/ants-2.3.4" \
     PATH="/opt/ants-2.3.4:$PATH"
 RUN echo "Downloading ANTs ..." \
@@ -159,11 +74,9 @@ RUN echo "Downloading ANTs ..." \
     && curl -fsSL --retry 5 https://dl.dropbox.com/s/gwf51ykkk5bifyj/ants-Linux-centos6_x86_64-v2.3.4.tar.gz \
     | tar -xz -C /opt/ants-2.3.4 --strip-components 1
 
-RUN pip3 install                     loguru                     black                     scipy                     mriqc                     antspyx                     antspynet                     pycdlib                     dcm2bids
+RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz &&                         tar xzvf docker-17.04.0-ce.tgz &&                         mv docker/docker /usr/local/bin &&                         rm -r docker docker-17.04.0-ce.tgz
 
-RUN git clone https://git.fmrib.ox.ac.uk/open-science/analysis/wmh_harmonisation.git /opt/wmh_harmonisation
-
-RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz &&                     tar xzvf docker-17.04.0-ce.tgz &&                     mv docker/docker /usr/local/bin &&                     rm -r docker docker-17.04.0-ce.tgz
+RUN pip3 install                         loguru                         black                         scipy                         antspyx                         antspynet                         pycdlib                         dcm2bids                         templateflow
 
 RUN echo '{ \
     \n  "pkg_manager": "apt", \
@@ -180,20 +93,6 @@ RUN echo '{ \
     \n      } \
     \n    ], \
     \n    [ \
-    \n      "fsl", \
-    \n      { \
-    \n        "version": "6.0.1", \
-    \n        "method": "binaries" \
-    \n      } \
-    \n    ], \
-    \n    [ \
-    \n      "afni", \
-    \n      { \
-    \n        "method": "binaries", \
-    \n        "version": "latest" \
-    \n      } \
-    \n    ], \
-    \n    [ \
     \n      "ants", \
     \n      { \
     \n        "version": "2.3.4" \
@@ -201,15 +100,11 @@ RUN echo '{ \
     \n    ], \
     \n    [ \
     \n      "run", \
-    \n      "pip3 install                     loguru                     black                     scipy                     mriqc                     antspyx                     antspynet                     pycdlib                     dcm2bids" \
+    \n      "curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz &&                         tar xzvf docker-17.04.0-ce.tgz &&                         mv docker/docker /usr/local/bin &&                         rm -r docker docker-17.04.0-ce.tgz" \
     \n    ], \
     \n    [ \
     \n      "run", \
-    \n      "git clone https://git.fmrib.ox.ac.uk/open-science/analysis/wmh_harmonisation.git /opt/wmh_harmonisation" \
-    \n    ], \
-    \n    [ \
-    \n      "run", \
-    \n      "curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz &&                     tar xzvf docker-17.04.0-ce.tgz &&                     mv docker/docker /usr/local/bin &&                     rm -r docker docker-17.04.0-ce.tgz" \
+    \n      "pip3 install                         loguru                         black                         scipy                         antspyx                         antspynet                         pycdlib                         dcm2bids                         templateflow" \
     \n    ] \
     \n  ] \
     \n}' > /neurodocker/neurodocker_specs.json

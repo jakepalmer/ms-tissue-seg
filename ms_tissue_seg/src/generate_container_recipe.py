@@ -27,8 +27,4 @@ cmd = f"""docker run --rm repronim/neurodocker:master generate docker \
                         dcm2bids \
                         templateflow" > {str(dockerfile)}"""
 
-# --run "git clone https://git.fmrib.ox.ac.uk/open-science/analysis/wmh_harmonisation.git /opt/wmh_harmonisation" \
-# --fsl version=6.0.1 method=binaries \
-# --afni method=binaries version=latest \
-
 os.system(cmd)

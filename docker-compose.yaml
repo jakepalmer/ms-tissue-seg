@@ -4,11 +4,12 @@
 version: "3.0"
 services:
   ms_tissue_seg:
-    image: ghcr.io/jakepalmer/ms-tissue-seg:dev_0.1
+    image: ghcr.io/jakepalmer/ms-tissue-seg:dev
     build: .
     environment:
       LOCAL_BASE_DIR: ${PWD}
     volumes:
       - ${PWD}:/home
       - /var/run/docker.sock:/var/run/docker.sock
-      # command: bash -c "python3 /home/run_pipeline.py"
+    command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"
+    # command: bash -c "python3 /home/run_pipeline.py"

@@ -2,11 +2,13 @@ from pathlib import Path
 import os
 from multiprocessing import cpu_count
 from joblib import Parallel, delayed
-from templateflow import api as tflow
-import ants
 
 
-def _dload_templates():
+def gather_templates() -> dict:
+
+    from templateflow import api as tflow
+    import ants
+
     template_t1_file: Path = tflow.get(
         "MNI152NLin2009aAsym", resolution=1, suffix="T1w", extension="nii.gz"
     )
@@ -57,14 +59,16 @@ def _dload_templates():
     template_brain = ants.mask_image(image=_tmp_t1, mask=_tmp_mask)
     ants.image_write(template_brain, str(template_brain_file))
 
-    return (
-        template_t1,
-        template_mask,
-        template_wm,
-        template_gm,
-        template_csf,
-        template_brain,
-    )
+    templates: dict = {
+        "t1": template_t1,
+        "mask": template_mask,
+        "wm": template_wm,
+        "gm": template_gm,
+        "csf": template_csf,
+        "brain": template_brain,
+    }
+
+    return templates
 
 
 class Constants:
@@ -73,23 +77,13 @@ class Constants:
     local_base_dir = Path(os.getenv("LOCAL_BASE_DIR"))
     base_dir = Path(__file__).parent.parent
     raw_data_dir = base_dir / "data" / "sourcedata"
-    # tmp_data_dir = base_dir / "data" / "interim"
     processed_data_dir = base_dir / "data" / "derivatives"
     bids_data_dir = base_dir / "data" / "bids_input"
     src_dir = base_dir / "ms_tissue_seg" / "src"
 
     # Set other parameters
-    nthreads: int = cpu_count() - 2
-
-    # Get template files
-    (
-        template_t1,
-        template_mask,
-        template_wm,
-        template_gm,
-        template_csf,
-        template_brain,
-    ) = _dload_templates()
+    nthreads: int = cpu_count() - 1
+    tmp_dir: str = "/tmp"
 
 
 # --- General helpers ---
