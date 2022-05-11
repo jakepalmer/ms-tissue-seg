@@ -1,8 +1,10 @@
 import shutil
 from pathlib import Path
-from loguru import logger
+
 import ants
 from antspynet import sysu_media_wmh_segmentation as wmh_segmentation
+from loguru import logger
+from scipy.io import savemat
 
 from ms_tissue_seg.utils import Constants, gather_templates
 
@@ -43,20 +45,23 @@ class Segmentation:
 
         tissue_segs = segmentations["segmentation"]
         ants.image_write(tissue_segs, f"{self.outdir}/tissue_segs.nii.gz")
+        savemat(f"{self.outdir}/tissue_segs.mat", {"data": tissue_segs.numpy()})
 
         gm = segmentations["probabilityimages"][0]
         ants.image_write(gm, f"{self.outdir}/tissue_segs_gm_prob.nii.gz")
+        savemat(f"{self.outdir}/tissue_segs_gm_prob.mat", {"data": gm.numpy()})
 
         wm = segmentations["probabilityimages"][1]
         ants.image_write(wm, f"{self.outdir}/tissue_segs_wm_prob.nii.gz")
+        savemat(f"{self.outdir}/tissue_segs_wm_prob.mat", {"data": wm.numpy()})
 
         csf = segmentations["probabilityimages"][2]
         ants.image_write(csf, f"{self.outdir}/tissue_segs_csf_prob.nii.gz")
+        savemat(f"{self.outdir}/tissue_segs_csf_prob.mat", {"data": csf.numpy()})
 
     def flair_seg(self):
         anat = ants.image_read(f"{self.outdir}/preprocessed_t1_brain.nii.gz")
-        flair = ants.image_read(
-            f"{self.outdir}/preprocessed_flair_brain.nii.gz")
+        flair = ants.image_read(f"{self.outdir}/preprocessed_flair_brain.nii.gz")
 
         wmh_segs = wmh_segmentation(
             flair,
@@ -66,8 +71,10 @@ class Segmentation:
             verbose=True,
         )
 
-        ants.image_write(
-            wmh_segs, f"{self.outdir}/tissue_segs_lesion_prob.nii.gz")
+        ants.image_write(wmh_segs, f"{self.outdir}/tissue_segs_lesion_prob.nii.gz")
+        savemat(
+            f"{self.outdir}/tissue_segs_lesion_prob.mat", {"data": wmh_segs.numpy()}
+        )
 
     def run(self):
         for subject, session in zip(self.subjects, self.sessions):
@@ -78,8 +85,7 @@ class Segmentation:
             self.session: str = session
             self.outdir: Path = self.setup_subj_derivs()
 
-            logger.debug(
-                f">> {subject} {session}: 3-tissue anatomical segmentation...")
+            logger.debug(f">> {subject} {session}: 3-tissue anatomical segmentation...")
             self.tissue_seg()
             logger.debug(f">> {subject} {session}: Lesion segmentation...")
             self.flair_seg()
