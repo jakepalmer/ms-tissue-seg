@@ -11,6 +11,4 @@ services:
     volumes:
       - ${PWD}:/home
       - /var/run/docker.sock:/var/run/docker.sock
-    command: bash -c "cd /home && pip install -e . && bash"
-    # command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"
-    # command: bash -c "python3 /home/run_pipeline.py"
+    command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"

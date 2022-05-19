@@ -46,10 +46,6 @@ def main():
     # --- Update subject and session IDs ---
     subjects = [f"sub-{s}" for s in subjects]
     sessions = [f"ses-{s}" for s in sessions]
-    # subjects = ["sub-RR215", "sub-RR241", "sub-RR242"]
-    # sessions = ["ses-20180605", "ses-20180509", "ses-20180528"]
-    # subjects = ["sub-RR215"]
-    # sessions = ["ses-20180605"]
 
     assert len(subjects) == len(sessions), logger.error(
         "Mismatch in number of subjects and sessions!"
