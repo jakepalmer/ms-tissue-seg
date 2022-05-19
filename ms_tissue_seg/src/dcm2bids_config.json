@@ -1,0 +1,36 @@
+{
+    "descriptions": [
+        {
+            "dataType": "anat",
+            "modalityLabel": "T1w",
+            "criteria": {
+                "SeriesDescription": "SAG FSPGR BRAVO",
+                "ImageType": [
+                    "ORIGINAL",
+                    "PRIMARY",
+                    "OTHER"
+                ],
+                "SidecarFilename": "<session>"
+            },
+            "sidecarChanges": {
+                "ProtocolName": "T1w"
+            }
+        },
+        {
+            "dataType": "anat",
+            "modalityLabel": "FLAIR",
+            "criteria": {
+                "SeriesDescription": "Sag CUBE FLAIR POST*",
+                "ImageType": [
+                    "ORIGINAL",
+                    "PRIMARY",
+                    "OTHER"
+                ],
+                "SidecarFilename": "<session>"
+            },
+            "sidecarChanges": {
+                "ProtocolName": "FLAIR"
+            }
+        }
+    ]
+}
