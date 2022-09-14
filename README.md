@@ -34,6 +34,12 @@ The pipeline has been written as an end-to-end pipeline that takes `.iso` files 
 
 Both a T1-weighted and FLAIR scan for each participant are required.
 
+## Docker
+
+The pipeline depends on Docker only. Installation instructions:
+
+* [Windows](https://docs.docker.com/desktop/install/windows-install/) via the download Docker Desktop button and [this](https://docs.docker.com/desktop/install/windows-install/#start-docker-desktop) section.
+
 ## Usage
 
 To execute this pipeline:
