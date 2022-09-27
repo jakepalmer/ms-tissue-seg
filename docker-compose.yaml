@@ -7,8 +7,8 @@ services:
     image: ghcr.io/jakepalmer/ms-tissue-seg:dev
     build: .
     environment:
-      LOCAL_BASE_DIR: ${PWD}
+      LOCAL_BASE_DIR: ./
     volumes:
-      - ${PWD}:/home
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./:/home"
+      - "//var/run/docker.sock:/var/run/docker.sock"
     command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"
