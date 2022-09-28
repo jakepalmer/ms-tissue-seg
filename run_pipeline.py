@@ -26,15 +26,15 @@ def main():
     logger.info("Dicom to BIDS conversion: Finished")
 
     # --- Quality control ---
-    try:
-        logger.info("Quality control: Running")
+    # try:
+    #     logger.info("Quality control: Running")
 
-        mriqc.runQC()
+    #     mriqc.runQC()
 
-        logger.info("Quality control: Finished")
-    except Exception as e:
-        logger.error(e)
-        logger.warning("MRIQC failed - skipping...")
+    #     logger.info("Quality control: Finished")
+    # except Exception as e:
+    #     logger.error(e)
+    #     logger.warning("MRIQC failed - skipping...")
 
     # --- Download templates to be used in processing ---
     logger.info("Download template files: Running")
