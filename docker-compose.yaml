@@ -6,10 +6,7 @@ services:
   ms_tissue_seg:
     image: ghcr.io/jakepalmer/ms-tissue-seg:dev
     build: .
-    # environment:
-    #   LOCAL_BASE_DIR: ./
     volumes:
       - "./:/home"
       - "/var/run/docker.sock:/var/run/docker.sock"
     command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"
-    # command: bash -c "cd /home && pip install -e . && bash"
