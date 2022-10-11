@@ -1,7 +1,6 @@
 """
 Run participant and group level QC with MRIQC.
 """
-import os
 from ms_tissue_seg.utils import Constants, runBash
 
 constants = Constants()

@@ -7,9 +7,10 @@ from joblib import Parallel, delayed
 
 from ms_tissue_seg.utils import constants, gather_templates
 from ms_tissue_seg import converter, mriqc
-from ms_tissue_seg import preprocess, segmentation
+from ms_tissue_seg.preprocess import Preprocess
+from ms_tissue_seg.segmentation import Segmentation
 
-logger.add(f"{constants.processed_data_dir}/run_pipeline.log", level="DEBUG")
+logger.add(f"{constants.processed_data_dir}/log_run_pipeline.log", level="DEBUG")
 
 
 @logger.catch
@@ -20,8 +21,19 @@ def main():
     logger.info("Dicom to BIDS conversion: Running")
 
     iso_objects = glob(f"{str(constants.raw_data_dir)}/*iso")
-    subjects, sessions = converter.extract_dcm(iso_objects, extract_iso=True)
-    converter.dcm2bids(subjects, sessions)
+    subjects, sessions = converter.extract_dcm(iso_objects, extract_iso=False)
+    # converter.dcm2bids(subjects, sessions)
+
+    # Update subject and session IDs to BIDS structure
+    subjects = [f"sub-{s}" for s in subjects]
+    sessions = [f"ses-{s}" for s in sessions]
+
+    logger.info("Confirming only correct timepoints are included...")
+    subjects, sessions = converter.check_timepoints(subjects, sessions)
+
+    assert len(subjects) == len(sessions), logger.error(
+        "Mismatch in number of subjects and sessions!"
+    )
 
     logger.info("Dicom to BIDS conversion: Finished")
 
@@ -43,21 +55,13 @@ def main():
 
     logger.info("Download template files: Finished")
 
-    # --- Update subject and session IDs ---
-    subjects = [f"sub-{s}" for s in subjects]
-    sessions = [f"ses-{s}" for s in sessions]
-
-    assert len(subjects) == len(sessions), logger.error(
-        "Mismatch in number of subjects and sessions!"
-    )
-
+    # --- Preprocess FLAIR and T1w ---
     logger.info(f"Running {len(subjects)} subjects:")
     logger.info(dict(zip(subjects, sessions)))
 
-    # --- Preprocess FLAIR and T1w ---
     logger.info("Preprocessing: Running")
 
-    prep = preprocess.Preprocess(subjects, sessions, templates)
+    prep = Preprocess(subjects, sessions, templates)
     prep.run()
 
     logger.info("Preprocessing: Finished")
@@ -65,7 +69,7 @@ def main():
     # --- Tissue and lesion segmentation ---
     logger.info("Segmentation: Running")
 
-    seg = segmentation.Segmentation(subjects, sessions, templates)
+    seg = Segmentation(subjects, sessions, templates)
     seg.run()
 
     logger.info("Segmentation: Finished")
