@@ -9,7 +9,7 @@
 # 
 # Timestamp: 2022/04/18 06:16:14 UTC
 
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bullseye
 
 USER root
 
@@ -67,12 +67,12 @@ RUN apt-get update -qq \
     && make install \
     && rm -rf /tmp/dcm2niix
 
-ENV ANTSPATH="/opt/ants-2.3.4" \
-    PATH="/opt/ants-2.3.4:$PATH"
+ENV ANTSPATH="/opt/ants-2.6.2" \
+    PATH="$ANTSPATH:$PATH"
 RUN echo "Downloading ANTs ..." \
-    && mkdir -p /opt/ants-2.3.4 \
-    && curl -fsSL --retry 5 https://dl.dropbox.com/s/gwf51ykkk5bifyj/ants-Linux-centos6_x86_64-v2.3.4.tar.gz \
-    | tar -xz -C /opt/ants-2.3.4 --strip-components 1
+    && mkdir -p $ANTSPATH \
+    && curl -fsSL --retry 5 https://github.com/stnava/ANTs/tarball/master \
+    | tar -xz -C $ANTSPATH --strip-components 1
 
 RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz &&                         tar xzvf docker-17.04.0-ce.tgz &&                         mv docker/docker /usr/local/bin &&                         rm -r docker docker-17.04.0-ce.tgz
 
@@ -95,7 +95,7 @@ RUN echo '{ \
     \n    [ \
     \n      "ants", \
     \n      { \
-    \n        "version": "2.3.4" \
+    \n        "version": "2.6.2" \
     \n      } \
     \n    ], \
     \n    [ \

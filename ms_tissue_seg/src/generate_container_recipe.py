@@ -9,7 +9,7 @@ constants = Constants()
 dockerfile = constants.base_dir / "Dockerfile"
 
 cmd = f"""docker run --rm repronim/neurodocker:master generate docker \
-                --base=python:3.9-slim-buster \
+                --base-image=python:3.9-slim-bullseye \
                 --pkg-manager=apt \
                 --dcm2niix version=v1.0.20201102 method=source \
                 --ants version=2.3.4 \
