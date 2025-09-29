@@ -1,12 +1,13 @@
 # BUILD = `docker-compose build`
 # RUN = `docker-compose run ms_tissue_seg`
 
-version: "3.0"
 services:
   ms_tissue_seg:
     image: ghcr.io/jakepalmer/ms-tissue-seg:dev
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - "./:/home"
       - "/var/run/docker.sock:/var/run/docker.sock"
-    command: bash -c "cd /home && pip install -e . && python3 run_pipeline.py"
+      - "./:/home"
+    command: bash -c "cd /home && uv run run_pipeline.py"

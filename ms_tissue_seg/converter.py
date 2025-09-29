@@ -5,9 +5,8 @@ from pathlib import Path
 
 from loguru import logger
 
-from ms_tissue_seg.utils import Constants, runBash, runBash_parallel
-
-constants = Constants()
+from ms_tissue_seg.utils import runBash, runBash_parallel
+from ms_tissue_seg.utils import constants
 
 
 def _update_conversion_config(subj: str, ses: str) -> Path:
@@ -21,13 +20,11 @@ def _update_conversion_config(subj: str, ses: str) -> Path:
     Returns:
         Path: Updated conversion configuration file
     """
-    master_config_file = constants.src_dir / "dcm2bids_config.json"
-    subj_config_file = Path(f"/tmp/_tmp_{subj}_{ses}_config.json")
+    master_config_file = constants.data_dir / "dcm2bids_config.json"
+    subj_config_file = constants.data_dir / f"_tmp_{subj}_{ses}_config.json"
 
     with open(master_config_file, "r") as file_in:
         data = json.load(file_in)
-        for entry in data["descriptions"]:
-            entry["criteria"]["SidecarFilename"] = f"*{ses}*"
 
     with open(subj_config_file, "w") as file_out:
         file_out.write(json.dumps(data))
@@ -116,7 +113,11 @@ def dcm2bids(subjects: list, sessions: list, parallel: bool = True) -> None:
     if parallel:
         runBash_parallel(func=os.system, args=args)
 
-    shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))
+    # Remove temporary config file
+    os.remove(str(subj_config_file))
+
+    # Remove temporary dcm2bids directory
+    # shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))
 
 
 def check_timepoints(subjects: list, sessions: list) -> tuple:
@@ -149,7 +150,7 @@ def check_timepoints(subjects: list, sessions: list) -> tuple:
                 sessions_keep.append(ses)
             else:
                 subjects_remove.append((subj, ses))
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             pass
 
     if subjects_remove:

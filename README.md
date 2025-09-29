@@ -1,7 +1,5 @@
 # MS Tissue and Lesion Segmentation
 
-:warning: This is a work in progress :warning:
-
 Tissue and lesion segmentation for modelling MS lesion progression.
 
 ## Project Organization
@@ -10,21 +8,21 @@ Tissue and lesion segmentation for modelling MS lesion progression.
     ├── README.md                               <- The top-level README for using this project
     ├── docker-compose.yaml
     ├── Dockerfile
-    ├── setup.py                                <- Makes project pip installable (pip install -e .)
+    ├── pyproject.toml                          <- Project dependencies
+    ├── uv.lock                                 <- Project dependencies
+    ├── run_pipeline.py                         <- Main script co-ordinating the analysis
     ├── data
     │   ├── bids_input                          <- BIDS compliant input files converted from `sourcedata`
     │   ├── derivatives                         <- Outputs of processing derived from bids_input
     │   ├── sourcedata                          <- The original, immutable data (here, *.iso files)
+    │   ├── dcm2bids_config.json                <- Configuration for converting from `sourcedata` to BIDS
     ├── ms_tissue_seg                           <- Source code
     │   ├── __init__.py                         <- Makes ms_tissue_seg a Python module
     │   ├── converter.py                        <- Tools for converting from sourcedata to BIDS format
     │   ├── mriqc.py                            <- Basic wrapper to run MRIQC (see below for reference)
     │   ├── preprocess.py                       <- Tools for preparing input files (e.g. brain extract, denoise etc.)
     │   ├── segmentation.py                     <- N-tissue and lesion segmentation
-    │   ├── utils.py                            <- General helper variables/functions (e.g. constant variables)
-    │   ├── src                                 <- Supporting files
-    │   │   ├── generate_container_recipe.py    <- Neurodocker command to generate Dockerfile for analysis
-    │   │   ├── dcm2bids_config.json            <- Configuration for converting from `sourcedata` to BIDS
+    │   ├── utils.py                            <- General helper variables/functions (e.g. constant variables) 
 
 ## Overview
 
@@ -33,6 +31,18 @@ This analysis is packaged as a Docker container, so only requires Docker to be i
 The pipeline has been written as an end-to-end pipeline that takes `.iso` files as the 'raw' inputs and outputs all processed files for each participant to the `/data/derivatives` directory.
 
 Both a T1-weighted and FLAIR scan for each participant are required.
+
+### Notes on the processing
+
+1. The `check_timepoints` function in `ms_tissue_seg/converter.py` checks whether the `ProcedureStepDescription` field in the BIDs data JSON file (referred to as the sidecar) includes the string 'screen' so only scans from the screening time point of the study are included and treatment time points are excluded. If subjects are excluded they will be logged in `data/derivatives/log_not_screen_timepoint.log` and a message will be printed to the terminal, for example
+
+```bash
+2025-09-25 20:49:54.032 | WARNING  | src.converter:check_timepoints:158 - 1 subjects not from screening timepoint
+2025-09-25 20:49:54.032 | WARNING  | src.converter:check_timepoints:160 - Deleting from BIDS data directory:
+2025-09-25 20:49:54.032 | WARNING  | src.converter:check_timepoints:162 -  > sub-RR246 ses-20190211
+```
+
+2. If you want to convert additional scan types to BIDS, the `data/dcm2bids_config.json` needs to be updated. Follow the documentation for `dcm2bids` linked below and follow the patterns already there for T1w and FLAIR.
 
 ## Docker
 
@@ -56,15 +66,11 @@ To execute this pipeline:
 
 ## Processing details and references
 
-### Environment
-
-Docker container generated with [Neurodocker](https://www.repronim.org/neurodocker/index.html). See the `/ms_tissue_seg/src/generate_container_recipe.py` for command used.
-
 ### Dicom to BIDS
 
-BIDS is a standard for structuring neuroimaging datasets that allows a consistent interface and documentation of datasets. `dcm2bids` is a tool that facilitates the conversion according the the configurations set in `/ms_tissue_seg/src/dcm2bids_config.json`.
+BIDS is a standard for structuring neuroimaging datasets that allows a consistent interface and documentation of datasets. `dcm2bids` is a tool that facilitates the conversion according the the configurations set in `/data/dcm2bids_config.json`.
 
-Documentation: <https://unfmontreal.github.io/Dcm2Bids/>  
+Documentation: <https://unfmontreal.github.io/Dcm2Bids/>
 Citation: [10.5281/zenodo.4568180](https://doi.org/10.5281/zenodo.4568180)
 
 ### QC

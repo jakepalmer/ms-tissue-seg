@@ -74,12 +74,11 @@ def gather_templates() -> dict:
 class Constants:
 
     # Set paths
-    # local_base_dir = Path(os.getenv("LOCAL_BASE_DIR"))
-    base_dir = Path.cwd()  # Path(__file__).parent.parent
-    raw_data_dir = base_dir / "data" / "sourcedata"
-    processed_data_dir = base_dir / "data" / "derivatives"
-    bids_data_dir = base_dir / "data" / "bids_input"
-    src_dir = base_dir / "ms_tissue_seg" / "src"
+    base_dir = Path.cwd()
+    data_dir = base_dir / "data"
+    raw_data_dir = data_dir / "sourcedata"
+    processed_data_dir = data_dir / "derivatives"
+    bids_data_dir = data_dir / "bids_input"
 
     # Set other parameters
     nthreads: int = cpu_count() - 1

@@ -3,7 +3,7 @@ from loguru import logger
 import ants
 from antspynet import preprocess_brain_image
 
-from ms_tissue_seg.utils import Constants, gather_templates
+from ms_tissue_seg.utils import Constants
 
 constants = Constants()
 
@@ -50,7 +50,6 @@ class Preprocess:
             intensity_matching_type=None,
             reference_image=None,
             intensity_normalization_type=None,  # "01" | "0mean"
-            antsxnet_cache_directory=constants.tmp_dir,
             verbose=True,
         )
 
