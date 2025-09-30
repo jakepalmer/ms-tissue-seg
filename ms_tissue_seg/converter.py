@@ -58,22 +58,24 @@ def extract_dcm(
         subj = "".join(ch for ch in id.split("_")[-1] if ch.isalnum())
         ses = "".join(ch for ch in id.split("_")[0] if ch.isalnum())
         subj_ses = Path(iso).parent / subj / ses
-
-        # Mkdir to extract dicoms to
-        Path(subj_ses).mkdir(parents=True, exist_ok=True)
-
         subjects.append(subj)
         sessions.append(ses)
 
-        cmd = f"pycdlib-extract-files -path-type iso -extract-to {str(subj_ses)} {iso}"
-
-        if parallel:
-            args.append(cmd)
+        # Mkdir to extract dicoms to
+        if subj_ses.exists():
+            logger.info(f"Subject {subj} session {ses} already exists - skipping extraction")
         else:
-            runBash(cmd)
+            Path(subj_ses).mkdir(parents=True, exist_ok=True)
+
+            cmd = f"pycdlib-extract-files -path-type iso -extract-to {str(subj_ses)} {iso}"
+
+            if parallel:
+                args.append(cmd)
+            else:
+                runBash(cmd)
 
     # Extract dicoms
-    if extract_iso and parallel:
+    if extract_iso and parallel and args:
         runBash_parallel(func=os.system, args=args)
 
     return subjects, sessions

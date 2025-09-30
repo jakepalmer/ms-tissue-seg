@@ -44,25 +44,60 @@ Both a T1-weighted and FLAIR scan for each participant are required.
 
 2. If you want to convert additional scan types to BIDS, the `data/dcm2bids_config.json` needs to be updated. Follow the documentation for `dcm2bids` linked below and follow the patterns already there for T1w and FLAIR.
 
-## Docker
+## Setup
 
-The pipeline depends on Docker only. Installation instructions:
+> **NOTE:** These instructions are not for Mac's with Silicone chips.
+
+### Clone the repo
+
+`cd` to the directory where you want to clone the repo and run:
+
+```bash
+git clone https://github.com/jakepalmer/ms-tissue-seg.git
+```
+
+Then `cd` into the `ms-tissue-seg` directory. All following instructions assume they are being run from this directory.
+
+### Docker
+
+It is preferrable to run the pipeline using docker. Installation instructions:
 
 * [Windows](https://docs.docker.com/desktop/install/windows-install/) via the download Docker Desktop button and [this](https://docs.docker.com/desktop/install/windows-install/#start-docker-desktop) section.
+
+Once Docker is installed, we first need to build the Docker image.
+
+```bash
+docker compose build
+```
+
+Note that the first time you do this it may take quite a while to build as some of the neuroimaging dependencies can be large.
+
+### Local
+
+> **WARNING:** the setup has not been tested locally on Windows, only on Mac (Intel chip).
+
+* Install `uv`: https://docs.astral.sh/uv/getting-started/installation/
+* Install Python: `uv python install 3.11`
+* Create a virtual environment: `uv venv`
+* Activate the virtual environment: `source ./.venv/bin/activate`
+* Install the dependencies: `uv sync`
 
 ## Usage
 
 To execute this pipeline:
 
-1. Clone the repo locally.
-2. Add the `.iso` files into `/data/sourcedata` directory
-3. In terminal, change directory to the cloned repo. For example on Mac or Linux:
+1. Add the `.iso` files into `/data/sourcedata` directory
+2. In terminal, change directory to the cloned repo. For example on Mac or Linux:
 
     `cd /path/to/cloned/ms-tissue-seg`
 
-4. Start processing by running:
+3. Start processing by running:
 
-    `docker-compose run --rm ms_tissue_seg`
+    `docker compose run --rm ms-tissue-seg`
+
+   Or if you are not using docker:
+
+    `uv run python run_pipeline.py`
 
 ## Processing details and references
 

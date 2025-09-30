@@ -1,29 +1,40 @@
 # syntax=docker/dockerfile:1
-# Keep this syntax directive! It's used to enable Docker BuildKit
-FROM python:3.11
+FROM python:3.11-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Python
 ENV PYTHONUNBUFFERED=1 \
-    # Compile bytecode
-    # Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
-    UV_COMPILE_BYTECODE=1 \
-    # Cache
-    # Ref: https://docs.astral.sh/uv/guides/integration/docker/#caching
-    UV_LINK_MODE=hardlink \
-    # Skip updating environment in the container
-    # Ref: https://docs.astral.sh/uv/reference/environment/#uv_no_sync
-    UV_NO_SYNC=1
+    UV_LINK_MODE=copy \
+    UV_VENV_PATH=/opt/.venv
 
-# Install uv
-# Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
 COPY --from=ghcr.io/astral-sh/uv:0.8.11 /uv /uvx /bin/
+
+WORKDIR /opt
+
+COPY uv.lock pyproject.toml ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen
+
+# Final stage - smaller image
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PYTHONUNBUFFERED=1 \
+    UV_VENV_PATH=/opt/.venv
+
+# Copy only the venv, not build tools
+COPY --from=builder /opt/.venv /opt/.venv
+COPY --from=ghcr.io/astral-sh/uv:0.8.11 /uv /uvx /bin/
+
+ENV PATH="/opt/.venv/bin:$PATH"
 
 WORKDIR /home
 
-COPY uv.lock pyproject.toml ./
-RUN uv sync --frozen
+CMD ["bash"]

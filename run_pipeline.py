@@ -44,7 +44,7 @@ def main():
 
     #     logger.info("Quality control: Finished")
     # except Exception as e:
-    #     logger.error(e)
+    #     logger.warning(e)
     #     logger.warning("MRIQC failed - skipping...")
 
     # --- Download templates to be used in processing ---

@@ -13,14 +13,15 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-    "antspynet>=0.3.1",
-    "antspyx>=0.6.1",
     "dcm2bids>=3.2.0",
-    "dcm2niix>=1.0.20250506",
     "loguru>=0.7.3",
     "pycdlib>=1.14.0",
     "ruff>=0.13.1",
     "templateflow>=25.0.3",
+    "antspyx>=0.6.1",
+    "antspynet>=0.3.1",
+    "dcm2niix>=1.0.20250506",
+    "tensorflow-cpu>=2.12,<2.16",
 ]
 
 [project.urls]

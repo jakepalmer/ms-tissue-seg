@@ -1,5 +1,6 @@
 *.iso
 archive_*
+_tmp*.json
 
 # Keep data directories but ignore files
 data/derivatives/*
@@ -103,3 +104,5 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+.venv/

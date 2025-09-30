@@ -1,4 +1,6 @@
-data**/__pycache__
-data
-.venv
-.github
+# Ignore everything by default
+*
+
+# Allow only the files needed for dependency installation
+!pyproject.toml
+!uv.lock
