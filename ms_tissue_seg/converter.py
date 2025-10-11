@@ -116,7 +116,7 @@ def dcm2bids(subjects: list, sessions: list, parallel: bool = True) -> None:
         runBash_parallel(func=os.system, args=args)
 
     # Remove temporary config file
-    os.remove(str(subj_config_file))
+    # os.remove(str(subj_config_file))
 
     # Remove temporary dcm2bids directory
     # shutil.rmtree(str(constants.bids_data_dir / "tmp_dcm2bids"))

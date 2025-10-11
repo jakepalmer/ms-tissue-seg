@@ -13,14 +13,18 @@ logger.add(f"{constants.processed_data_dir}/log_run_pipeline.log", level="DEBUG"
 
 
 @logger.catch
-def main():
+def main() -> None:
     logger.success(">> STARTING PROCESSING <<")
 
     # --- Convert dicom to BIDS ---
     logger.info("Dicom to BIDS conversion: Running")
 
     iso_objects = glob(f"{str(constants.raw_data_dir)}/*iso")
+    logger.debug(f"Found {len(iso_objects)} iso objects")
+    assert len(iso_objects) > 0, logger.error("No iso objects found!")
+    
     subjects, sessions = converter.extract_dcm(iso_objects, extract_iso=True)
+    logger.debug(f"Extracted subjects: {len(subjects)}, sessions: {len(sessions)}")
     converter.dcm2bids(subjects, sessions)
 
     # Update subject and session IDs to BIDS structure
@@ -35,6 +39,11 @@ def main():
     )
 
     logger.info("Dicom to BIDS conversion: Finished")
+
+    # If no subjects found, exit
+    if len(subjects) == 0:
+        logger.warning("No subjects found - exiting...")
+        return None
 
     # --- Quality control ---
     # try:
@@ -74,6 +83,8 @@ def main():
     logger.info("Segmentation: Finished")
 
     logger.success(">> FINISHED <<")
+    
+    return None
 
 
 if __name__ == "__main__":

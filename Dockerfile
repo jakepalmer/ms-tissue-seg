@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM python:3.11-slim AS builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --fix-missing --no-install-recommends \
     build-essential \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
@@ -36,5 +36,3 @@ COPY --from=ghcr.io/astral-sh/uv:0.8.11 /uv /uvx /bin/
 ENV PATH="/opt/.venv/bin:$PATH"
 
 WORKDIR /home
-
-CMD ["bash"]

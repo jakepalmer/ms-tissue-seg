@@ -11,7 +11,7 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "dcm2bids>=3.2.0",
     "loguru>=0.7.3",

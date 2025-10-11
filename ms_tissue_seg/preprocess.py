@@ -3,9 +3,7 @@ from loguru import logger
 import ants
 from antspynet import preprocess_brain_image
 
-from ms_tissue_seg.utils import Constants
-
-constants = Constants()
+from ms_tissue_seg.utils import constants
 
 
 class Preprocess:

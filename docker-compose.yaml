@@ -4,6 +4,7 @@
 services:
   ms-tissue-seg:
     image: ghcr.io/jakepalmer/ms-tissue-seg:dev
+    platform: linux/x86_64
     build: 
       context: .
       dockerfile: Dockerfile
@@ -13,4 +14,5 @@ services:
       - "./ms_tissue_seg:/home/ms_tissue_seg"
       - "./run_pipeline.py:/home/run_pipeline.py"
       - "./.python-version:/home/.python-version"
-    command: sh -c "cd /home && uv run python run_pipeline.py"
+    working_dir: /home
+    command: ["uv", "run", "python", "run_pipeline.py"]
