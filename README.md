@@ -5,9 +5,10 @@ Tissue and lesion segmentation for modelling MS lesion progression.
 ## Project Organization
 
     ├── LICENSE
+    ├── Makefile                                <- Common commands (use with `make ...`)
     ├── README.md                               <- The top-level README for using this project
-    ├── docker-compose.yaml
-    ├── Dockerfile
+    ├── docker-compose.yaml                     <- Container commands
+    ├── Dockerfile                              <- Container definition
     ├── pyproject.toml                          <- Project dependencies
     ├── uv.lock                                 <- Project dependencies
     ├── run_pipeline.py                         <- Main script co-ordinating the analysis
@@ -44,6 +45,8 @@ Both a T1-weighted and FLAIR scan for each participant are required.
 
 2. If you want to convert additional scan types to BIDS, the `data/dcm2bids_config.json` needs to be updated. Follow the documentation for `dcm2bids` linked below and follow the patterns already there for T1w and FLAIR.
 
+3. Full commands referenced below that use `make ...` can be seen in the `Makefile`. For example, look at the commands for `make run-qc` to see how they are used.
+
 ## Setup
 
 > **NOTE:** These instructions are not for Mac's with Silicone chips.
@@ -67,7 +70,7 @@ It is preferrable to run the pipeline using docker. Installation instructions:
 Once Docker is installed, we first need to build the Docker image.
 
 ```bash
-docker compose build
+make build-container
 ```
 
 Note that the first time you do this it may take quite a while to build as some of the neuroimaging dependencies can be large.
@@ -91,13 +94,17 @@ To execute this pipeline:
 
     `cd /path/to/cloned/ms-tissue-seg`
 
-3. Start processing by running:
+3. If using docker, build the container first:
 
-    `docker compose run --rm ms-tissue-seg`
+    `make build-container`
+
+4. Start processing with docker by running:
+
+    `make run-pipeline`
 
    Or if you are not using docker:
 
-    `uv run python run_pipeline.py`
+    `make run-pipeline-no-docker`
 
 ## Processing details and references
 
@@ -107,13 +114,6 @@ BIDS is a standard for structuring neuroimaging datasets that allows a consisten
 
 Documentation: <https://unfmontreal.github.io/Dcm2Bids/>
 Citation: [10.5281/zenodo.4568180](https://doi.org/10.5281/zenodo.4568180)
-
-### QC
-
-MRIQC is a BIDS-app used run for automatic QC of input T1w images that facilitates visual inspection and generates a range of participant and group-level QC metrics.
-
-Documentation: <https://mriqc.readthedocs.io/en/latest/>  
-Citation: [10.1371/journal.pone.0184661](https://doi.org/10.1371/journal.pone.0184661)
 
 ### Preprocessing
 
@@ -135,6 +135,19 @@ Finally, automatic lesion segmentation was run using using `sysu_media` lesion s
 
 Documentation: <https://github.com/ANTsX/ANTsPyNet>  
 Citation: [10.1016/j.neuroimage.2018.07.005](https://doi.org/10.1016/j.neuroimage.2018.07.005) and [10.1109/TMI.2019.2905770](https://doi.org/10.1109/TMI.2019.2905770)
+
+### Quality control (QC)
+
+This is an additional step that is not strictly required for the analysis, but is good practice to identify poor quality input data.
+
+MRIQC is a BIDS-app used run for automatic QC of input T1w images that facilitates visual inspection and generates a range of participant and group-level QC metrics.
+
+To run:
+
+`make run-qc`
+
+Documentation: <https://mriqc.readthedocs.io/en/latest/>  
+Citation: [10.1371/journal.pone.0184661](https://doi.org/10.1371/journal.pone.0184661)
 
 --------
 Project based on the [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/) #cookiecutterdatascience

@@ -9,7 +9,6 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
       - "./data:/home/data"
       - "./ms_tissue_seg:/home/ms_tissue_seg"
       - "./run_pipeline.py:/home/run_pipeline.py"

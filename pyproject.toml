@@ -21,7 +21,6 @@ dependencies = [
     "antspyx>=0.6.1",
     "antspynet>=0.3.1",
     "dcm2niix>=1.0.20250506",
-    "tensorflow-cpu>=2.12,<2.16",
 ]
 
 [project.urls]

@@ -5,7 +5,7 @@ from loguru import logger
 from glob import glob
 
 from ms_tissue_seg.utils import constants, gather_templates
-from ms_tissue_seg import converter, mriqc  # noqa
+from ms_tissue_seg import converter
 from ms_tissue_seg.preprocess import Preprocess
 from ms_tissue_seg.segmentation import Segmentation
 
@@ -44,17 +44,6 @@ def main() -> None:
     if len(subjects) == 0:
         logger.warning("No subjects found - exiting...")
         return None
-
-    # --- Quality control ---
-    # try:
-    #     logger.info("Quality control: Running")
-
-    #     mriqc.runQC()
-
-    #     logger.info("Quality control: Finished")
-    # except Exception as e:
-    #     logger.warning(e)
-    #     logger.warning("MRIQC failed - skipping...")
 
     # --- Download templates to be used in processing ---
     logger.info("Download template files: Running")

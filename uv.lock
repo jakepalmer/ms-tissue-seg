@@ -975,7 +975,6 @@ dependencies = [
     { name = "pycdlib" },
     { name = "ruff" },
     { name = "templateflow" },
-    { name = "tensorflow-cpu" },
 ]
 
 [package.metadata]
@@ -988,7 +987,6 @@ requires-dist = [
     { name = "pycdlib", specifier = ">=1.14.0" },
     { name = "ruff", specifier = ">=0.13.1" },
     { name = "templateflow", specifier = ">=25.0.3" },
-    { name = "tensorflow-cpu", specifier = ">=2.12,<2.16" },
 ]
 
 [[package]]
@@ -1687,40 +1685,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/81/40/31b27ab3f46de305475ef5160acc8a2addb8fa9ea2179777c4e9bcc5baaf/tensorflow-2.15.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e73d43dbc68d8c711e70edecc4ac70472799a25ec4ec18a84d479ee18033d3c5", size = 2121, upload-time = "2024-03-08T23:56:06.384Z" },
     { url = "https://files.pythonhosted.org/packages/c1/2d/636471492d93b6c1bf5375b81be7105a313a8c91a07c37e43625b00ca5c3/tensorflow-2.15.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bb0edd69103c154245c5f209f0507355cc68ba7e4de350084bc31edc562478e4", size = 475258663, upload-time = "2024-03-08T23:47:37.697Z" },
     { url = "https://files.pythonhosted.org/packages/cb/c5/f5b31ee348459d6f6c54d762488aa0a8e42ff11a7395f4d158915ad43000/tensorflow-2.15.1-cp311-cp311-win_amd64.whl", hash = "sha256:a49f8755c74a89553294a99ab25aa87ab1cddbfa40fe58387e09f64f0578cedc", size = 2096, upload-time = "2024-03-08T23:53:45.889Z" },
-]
-
-[[package]]
-name = "tensorflow-cpu"
-version = "2.15.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "absl-py" },
-    { name = "astunparse" },
-    { name = "flatbuffers" },
-    { name = "gast" },
-    { name = "google-pasta" },
-    { name = "grpcio" },
-    { name = "h5py" },
-    { name = "keras" },
-    { name = "libclang" },
-    { name = "ml-dtypes" },
-    { name = "numpy" },
-    { name = "opt-einsum" },
-    { name = "packaging" },
-    { name = "protobuf" },
-    { name = "setuptools" },
-    { name = "six" },
-    { name = "tensorboard" },
-    { name = "tensorflow-estimator" },
-    { name = "tensorflow-io-gcs-filesystem" },
-    { name = "termcolor" },
-    { name = "typing-extensions" },
-    { name = "wrapt" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d8/6c/dc0642ce2656637d8f31ba9c618a41bf14e38428ba77e4e0a9359be39436/tensorflow_cpu-2.15.1-cp311-cp311-macosx_10_15_x86_64.whl", hash = "sha256:ee3bb114c6031d471d891c761e7eda2c80bea19bb318abcd3d5bab92ccfaf9aa", size = 236482774, upload-time = "2024-03-08T23:52:40.963Z" },
-    { url = "https://files.pythonhosted.org/packages/5b/00/af89cb211fc96ffdebb52a687dad7f83b0b1d82bc057f65309fa03a89911/tensorflow_cpu-2.15.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:54660c074d7241a503e81edfd9f5ef5af88f64051b72e2945f26318c790f2d26", size = 207208420, upload-time = "2024-03-08T23:48:30.479Z" },
-    { url = "https://files.pythonhosted.org/packages/51/8a/ff2fc9bad8edc68ef4cd63963c10b320de03d3496def83d2a9b1635c6831/tensorflow_cpu-2.15.1-cp311-cp311-win_amd64.whl", hash = "sha256:dc75baf4c08a6e8ab7ceec97f002bb993508a5b58f13fac5283ee976a71a3c67", size = 2133, upload-time = "2024-03-08T23:53:47.249Z" },
 ]
 
 [[package]]
