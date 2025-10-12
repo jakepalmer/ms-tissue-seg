@@ -26,7 +26,6 @@ class Preprocess:
         return outdir
 
     def preprocess(self, modality):
-
         if modality == "t1":
             img = ants.image_read(
                 f"{constants.bids_data_dir}/{self.subject}/{self.session}/anat/{self.subject}_{self.session}_T1w.nii.gz"
@@ -64,20 +63,16 @@ class Preprocess:
         )
 
         brain = ants.mask_image(preprocessed_img, brainmask)
-        ants.image_write(
-            brain, f"{self.outdir}/preprocessed_{modality}_brain.nii.gz")
+        ants.image_write(brain, f"{self.outdir}/preprocessed_{modality}_brain.nii.gz")
 
         xfms = preprocessed["template_transforms"]
         fwd_xfm = ants.read_transform(xfms["fwdtransforms"][0])
         inv_xfm = ants.read_transform(xfms["invtransforms"][0])
-        ants.write_transform(
-            fwd_xfm, f"{self.outdir}/transform_{modality}_2_mni.mat")
-        ants.write_transform(
-            inv_xfm, f"{self.outdir}/transform_mni_2_{modality}.mat")
+        ants.write_transform(fwd_xfm, f"{self.outdir}/transform_{modality}_2_mni.mat")
+        ants.write_transform(inv_xfm, f"{self.outdir}/transform_mni_2_{modality}.mat")
 
     def run(self):
         for subject, session in zip(self.subjects, self.sessions):
-
             logger.info(f">> {subject} {session}")
 
             self.subject: str = subject

@@ -1,8 +1,10 @@
 """
 Main entrypoint for processing pipeline.
 """
+
 from loguru import logger
 from glob import glob
+import click
 
 from ms_tissue_seg.utils import constants, gather_templates
 from ms_tissue_seg import converter
@@ -13,7 +15,13 @@ logger.add(f"{constants.processed_data_dir}/log_run_pipeline.log", level="DEBUG"
 
 
 @logger.catch
-def main() -> None:
+@click.command()
+@click.option(
+    "--run-conversion-only",
+    is_flag=True,
+    help="If set, only run the DICOM to BIDS conversion step (not including checking timepoints).",
+)
+def main(run_conversion_only: bool = False) -> None:
     logger.success(">> STARTING PROCESSING <<")
 
     # --- Convert dicom to BIDS ---
@@ -22,7 +30,7 @@ def main() -> None:
     iso_objects = glob(f"{str(constants.raw_data_dir)}/*iso")
     logger.debug(f"Found {len(iso_objects)} iso objects")
     assert len(iso_objects) > 0, logger.error("No iso objects found!")
-    
+
     subjects, sessions = converter.extract_dcm(iso_objects, extract_iso=True)
     logger.debug(f"Extracted subjects: {len(subjects)}, sessions: {len(sessions)}")
     converter.dcm2bids(subjects, sessions)
@@ -31,14 +39,18 @@ def main() -> None:
     subjects = [f"sub-{s}" for s in subjects]
     sessions = [f"ses-{s}" for s in sessions]
 
-    logger.info("Confirming only correct timepoints are included...")
-    subjects, sessions = converter.check_timepoints(subjects, sessions)
-
     assert len(subjects) == len(sessions), logger.error(
         "Mismatch in number of subjects and sessions!"
     )
 
     logger.info("Dicom to BIDS conversion: Finished")
+
+    if run_conversion_only:
+        logger.info("Run conversion only flag set - exiting after conversion step.")
+        return None
+
+    logger.info("Confirming only screen timepoints are included...")
+    subjects, sessions = converter.check_timepoints(subjects, sessions)
 
     # If no subjects found, exit
     if len(subjects) == 0:
@@ -72,7 +84,7 @@ def main() -> None:
     logger.info("Segmentation: Finished")
 
     logger.success(">> FINISHED <<")
-    
+
     return None
 
 

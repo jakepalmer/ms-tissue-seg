@@ -969,6 +969,7 @@ source = { editable = "." }
 dependencies = [
     { name = "antspynet" },
     { name = "antspyx" },
+    { name = "click" },
     { name = "dcm2bids" },
     { name = "dcm2niix" },
     { name = "loguru" },
@@ -981,6 +982,7 @@ dependencies = [
 requires-dist = [
     { name = "antspynet", specifier = ">=0.3.1" },
     { name = "antspyx", specifier = ">=0.6.1" },
+    { name = "click", specifier = ">=8.3.0" },
     { name = "dcm2bids", specifier = ">=3.2.0" },
     { name = "dcm2niix", specifier = ">=1.0.20250506" },
     { name = "loguru", specifier = ">=0.7.3" },

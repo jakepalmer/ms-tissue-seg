@@ -106,6 +106,12 @@ To execute this pipeline:
 
     `make run-pipeline-no-docker`
 
+### Optional
+
+There is an option to run the data conversion step only (i.e. `.iso` files to BIDs format). This might be useful for understanding the data before running the full pipeline. 
+
+`make run-conversion` or `make run-conversion-no-docker`
+
 ## Processing details and references
 
 ### Dicom to BIDS

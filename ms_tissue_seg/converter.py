@@ -63,7 +63,9 @@ def extract_dcm(
 
         # Mkdir to extract dicoms to
         if subj_ses.exists():
-            logger.info(f"Subject {subj} session {ses} already exists - skipping extraction")
+            logger.info(
+                f"Subject {subj} session {ses} already exists - skipping extraction"
+            )
         else:
             Path(subj_ses).mkdir(parents=True, exist_ok=True)
 
@@ -96,7 +98,6 @@ def dcm2bids(subjects: list, sessions: list, parallel: bool = True) -> None:
     args = []
 
     for subj, ses in zip(subjects, sessions):
-
         subj_config_file: Path = _update_conversion_config(subj, ses)
 
         # Run conversion
@@ -106,7 +107,7 @@ def dcm2bids(subjects: list, sessions: list, parallel: bool = True) -> None:
                     -s {ses} \
                     -o {str(constants.bids_data_dir)} \
                     -c {str(subj_config_file)}"""
-                    # --force_dcm2bids"""
+        # --force_dcm2bids"""
 
         if parallel:
             args.append(cmd)

@@ -8,8 +8,14 @@ MRIQC_DIR = $(DATA_DIR)/derivatives/mriqc
 build-container:
 	docker compose build
 
+run-conversion:
+	docker compose run --rm ms-tissue-seg uv run python run_pipeline.py --run-conversion-only
+
 run-pipeline:
 	docker compose run --rm ms-tissue-seg
+
+run-conversion-no-docker:
+	uv run python run_pipeline.py --run-conversion-only
 
 run-pipeline-no-docker:
 	uv run python run_pipeline.py

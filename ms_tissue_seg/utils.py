@@ -5,7 +5,6 @@ from joblib import Parallel, delayed
 
 
 def gather_templates() -> dict:
-
     from templateflow import api as tflow
     import ants
 
@@ -72,7 +71,6 @@ def gather_templates() -> dict:
 
 
 class Constants:
-
     # Set paths
     base_dir = Path.cwd()
     data_dir = base_dir / "data"

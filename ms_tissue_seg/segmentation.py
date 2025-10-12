@@ -80,7 +80,6 @@ class Segmentation:
 
     def run(self):
         for subject, session in zip(self.subjects, self.sessions):
-
             logger.info(f">> {subject} {session}")
 
             self.subject: str = subject

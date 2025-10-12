@@ -21,6 +21,7 @@ dependencies = [
     "antspyx>=0.6.1",
     "antspynet>=0.3.1",
     "dcm2niix>=1.0.20250506",
+    "click>=8.3.0",
 ]
 
 [project.urls]
